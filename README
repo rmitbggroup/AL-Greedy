@@ -1,0 +1,33 @@
+Packages for the implementation:
+1. python 3.8.0
+2. networkx 1.11
+3. torch 1.4.0
+4. torchvision 0.5.0
+5. numpy 1.19.5
+6. scipy 1.10.0
+7. scikit-learn 1.2.1
+
+Datasets and GNNs: This repo uses CORA and GCN for demonstration and all datasets and GNNs are publicly available online. Specifically, we use implementation of GNNs in the StellarGraph package (https://github.com/stellargraph/stellargraph).
+
+Input files description:
+1. data: A list of files storing the topological information of CORA.
+   - ind.cora.x     : the feature vectors of the training instances (scipy.sparse.csr.csr_matrix)
+   - ind.cora.y     : the one-hot labels of the labeled training instances (numpy.ndarray)
+   - ind.cora.allx  : the feature vectors of both labeled and unlabeled training instances (scipy.sparse.csr.csr_matrix)
+   - ind.cora.ally  : the labels for instances in ind.dataset_str.allx (numpy.ndarray)
+   - ind.cora.graph : the dict in the format {index: [index of neighbor nodes]} (collections.defaultdict)
+   - ind.cora.tx    : the feature vectors of the test instances (scipy.sparse.csr.csr_matrix)
+   - ind.cora.ty    : the one-hot labels of the test instances (numpy.ndarray)
+   - ind.cora.test.index : indices of test instances in graph
+2. greedy.py: The implementation of the GreedyET seed selection method. This file reads the input dataset and outputs the selected seeds.
+3. evaluate.py: The implementation of the GCN evaluation model. This file reads the selected seeds and evaluates them using the GCN model.
+4. utils.py: A file consists of functions for reading and preprocessing the input dataset.
+5. graphConvolution.py: A file that defines the layer of the GCN model.
+
+The code consists of two steps: seed selection and seed evaluation with GNNs. Below are example commands:
+1. Seed selection:
+   Command: python3 greedy.py --dataset cora --B 140 --sim_metric COSINE --t 0.9999 --k 1 --sample_size 0
+   Output: A json file which stores an array of indices of selected seeds.
+2. Seed evaluation:
+   Command: python3 evaluate.py --dataset cora --B 140 --sim_metric COSINE --t 0.9999 --k 1 --sample_size 0
+   Output: The test accuracy corresponding to the highest validation accuracy.
